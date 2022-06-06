@@ -18,6 +18,9 @@ export default class Api{
     async findById(id){
         try {
             const todos = await this.findAll()
+            if(id === undefined){
+                return todos
+            }
             const resultado= todos.find(e=>e.id==id)
             return resultado
         } catch (error) {
@@ -97,7 +100,6 @@ export default class Api{
                 "productos": []
             }
             todos.push(obj)
-
             await fs.promises.writeFile(this.rutaBD,JSON.stringify(todos))
             return id
         } catch (error) {
@@ -121,7 +123,6 @@ export default class Api{
         try {
             const todos = await this.findAll()
             const resultado= todos.find(e=>e.id==id)
-            console.log(id)
             let lista= resultado.productos
             return lista
         } catch (error) {
@@ -158,7 +159,6 @@ export default class Api{
             const posicion= todos.find(e=>e.id==parseInt(idCarrito))
             let prd = posicion.productos
 
-            console.log(prd)
             const posProd = prd.findIndex(e=>e.id==parseInt(idProducto))
             prd.splice(posProd,1)
             let obj = {

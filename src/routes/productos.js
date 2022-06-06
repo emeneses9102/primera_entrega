@@ -13,12 +13,7 @@ function adminOrClient(req, res, next){
     }
 }
 
-router.get('/', async (req, res)=>{
-    const productos = await api.findAll()
-    res.json(productos)
-})
-
-router.get('/:id', async (req, res)=>{
+router.get('/:id?', async (req, res)=>{
     const {id} = req.params
     const producto = await api.findById(id)
     res.json(producto)
