@@ -130,18 +130,20 @@ export default class Api{
         }
     }
 
-    async AddProductCart(id,obj){
+    async AddProductCart(id,{id:idProduct}){
         try {
             const todos = await this.findAll()
             const resultado= todos.find(e=>e.id==id)
-            let prd = resultado.productos
-            
-            resultado.productos.length === 0 ? prd = [obj] : prd.push(obj)
 
-            console.log("prod",prd)
-            obj = {
+            //muestro los productos actuales
+            let prd = resultado.productos
+
+            const prdById = await this.findProductById(idProduct)
+
+            resultado.productos.length === 0 ? prd = [prdById] : prd.push(prdById)
+            let obj = {
                 "id":parseInt(id),
-                "timestamp":obj.timestamp,
+                "timestamp":resultado.timestamp,
                 "productos":prd
             }
 
@@ -169,6 +171,16 @@ export default class Api{
             todos.splice(posicion,1,obj)
             await fs.promises.writeFile(this.rutaBD,JSON.stringify(todos))
             return "producto eliminado"
+        } catch (error) {
+            throw new Error(`Error: ${error}`)
+        }
+    }
+
+    async findProductById(id){
+        try {
+            const todos= await fs.promises.readFile(__dirname +'/dataBase/productos.json','utf-8')
+            const resultado= JSON.parse(todos).find(e=>e.id==id)
+            return resultado
         } catch (error) {
             throw new Error(`Error: ${error}`)
         }
